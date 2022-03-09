@@ -19,6 +19,7 @@ class UserController extends Controller
     public function index()
     {
         $users=User::all();
+        //wehere status =1
         return view('users.list', compact('users'));
     }
 
@@ -158,6 +159,7 @@ class UserController extends Controller
             DB::beginTransaction();
 
             $delete_user = User::whereId($id)->delete();
+            //up date champ
 
             if(!$delete_user){
                 DB::rollBack();
