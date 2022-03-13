@@ -25,3 +25,5 @@ Route::resource('users', App\Http\Controllers\UserController::class);
 Route::resource('permission', App\Http\Controllers\PermissionController::class);
 Route::resource('role', App\Http\Controllers\RoleController::class);
 Route::resource('categories', App\Http\Controllers\CategorieController::class);
+Route::resource('images', App\Http\Controllers\ImageController::class);
+Route::resource('articles', App\Http\Controllers\ArticleController::class);

@@ -9,7 +9,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Create new Categorie</h1>
-        <a href="{{route('categories.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+        <a href="{{route('images.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
     </div>
 
@@ -33,22 +33,17 @@
             </div>
         @endif
 
-        <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('images.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
              <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>libelle:</strong>
-                        <input type="text" name="libelle" class="form-control" placeholder="libelle">
+                        <strong>name:</strong>
+                        <input type="text" name="name" class="form-control" placeholder="name">
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-12">
-                    <div class="form-group">
-                        <strong>description:</strong>
-                        <textarea class="form-control" style="height:150px" name="description" placeholder="description"></textarea>
-                    </div>
-                </div>
+              
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Image:</strong>
