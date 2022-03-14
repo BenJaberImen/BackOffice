@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Article;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
@@ -29,8 +30,8 @@ class ArticleController extends Controller
     public function create()
     {
         $categories = Categorie::get();
-
-        return view('articles.create', compact('categories'));
+$images=Image::get();
+        return view('articles.create', compact('categories', 'images'));
     }
 
     /**
@@ -46,6 +47,7 @@ class ArticleController extends Controller
             'description' => 'required',
             'prix_intial'=> 'required',
             'categorie_id' =>'required',
+            'image_id' =>'required',
         ]);
         try {
             DB::beginTransaction();
@@ -56,7 +58,7 @@ class ArticleController extends Controller
                 'description' => $request->description,
                 'prix_intial' => $request->prix_intial,
                 'categorie_id' =>$request->categorie_id,
-               
+                'image_id' =>$request->image_id,
             ]);
 
             if(!$create_article){
@@ -95,7 +97,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
+    {$images=Image::get();
         $article =  Article::whereId($id)->first();
         $categories = Categorie::get();
 
@@ -103,7 +105,7 @@ class ArticleController extends Controller
         if(!$article){
             return back()->with('error', 'User Not Found');
         }
-        return view('articles.edit',compact('article','categories'));
+        return view('articles.edit',compact('article','categories','images'));
     }
 
     /**
@@ -119,7 +121,9 @@ class ArticleController extends Controller
             'libille' => 'required',
             'description' => 'required',
             'prix_intial'=> 'required',
-            'categorie_id' =>'required'
+            'categorie_id' =>'required',
+            'image_id' =>'required',
+            
         ]);
        
         try {
@@ -130,7 +134,8 @@ class ArticleController extends Controller
                 'libille' => $request->libille,
                 'description' => $request->description,
                 'prix_intial' => $request->prix_intial,
-                'categorie_id'=> $request->categorie_id
+                'categorie_id'=> $request->categorie_id,
+                'image_id' =>$request->image_id
             ]);
 
             if(!$update_article){

@@ -15,6 +15,7 @@ class Article extends Model
         'description',
         'prix_intial',
         'categorie_id',
+        'image_id',
         
 
        
@@ -22,4 +23,9 @@ class Article extends Model
     public function categorie(){
         return $this->belongsTo(Categorie::class);
     }
+
+    public function image(){
+        return $this->belongsTo(Image::class);
+    }
+
 }

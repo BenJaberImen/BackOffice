@@ -14,4 +14,8 @@ class Image extends Model
         'image',
 
     ];
+    public function article() 
+    { 
+        return $this->hasMany(Article::class); 
+    }
 }

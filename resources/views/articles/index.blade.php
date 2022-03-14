@@ -29,6 +29,7 @@
                             <th>description</th>
                             <th>prix initial</th>
                             <th>categorie</th>
+                            <th>image</th>
 
                             <th>Action</th>
                         </tr>
@@ -42,7 +43,7 @@
                                <td> {{$article->prix_intial}} DT </td>
 
                                <td>{{ $article->categorie->libelle }}</td>
-
+                               <td><img src="/image/{{ $article->image->image }}" width="100px"></td>
                                 <td>
                                     <form action="{{ route('articles.destroy',$article->id) }}" method="POST">
 

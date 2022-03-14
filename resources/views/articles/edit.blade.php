@@ -87,6 +87,23 @@
 
 
                                       </div>
+                                    </div>
+                                    <div class="from-group">
+
+                                        <label for="image_id"> image</label>
+                                        <select id="image_id" name="image_id" class="from-group">
+
+                                        <option value="">--Select--</option>
+                                        @foreach ($images as $image )
+                                        <option value="{{ $image->id }}" {{ $image->id == $article->image_id ? 'selected':''}}>{{ $image->id ==$article->image_id ? 'selected':''}} {{ $image->name }}</option>
+
+                                        @endforeach
+
+
+                                        </select>
+
+
+                                                          </div>
                 {{-- Save Button --}}
                 <button type="submit" class="btn btn-success btn-user btn-block">
                     Update
