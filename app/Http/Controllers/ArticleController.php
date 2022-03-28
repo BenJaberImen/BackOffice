@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Article;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class ArticleController extends Controller
 {
@@ -17,8 +19,8 @@ class ArticleController extends Controller
     public function index()
     {
         $articles=Article::all();
-        
-        return view('articles.index', compact('articles'));
+
+        return view('articles.index')->with('articles',$articles);
     }
 
     /**
@@ -30,7 +32,7 @@ class ArticleController extends Controller
     {
         $categories = Categorie::get();
 
-        return view('articles.create', compact('categories'));
+      return view('articles.create', compact('categories'));
     }
 
     /**
@@ -41,51 +43,56 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        { $request->validate([
-            'libille' => 'required',
-            'description' => 'required',
-            'prix_intial'=> 'required',
-            'categorie_id' =>'required',
-        ]);
-        try {
-            DB::beginTransaction();
-           
-
-            $create_article = Article::create([
-                'libille' => $request->libille,
-                'description' => $request->description,
-                'prix_intial' => $request->prix_intial,
-                'categorie_id' =>$request->categorie_id,
-               
-            ]);
-
-            if(!$create_article){
-                DB::rollBack();
-
-                return back()->with('error', 'Something went wrong while saving user data');
-            }
-
-            DB::commit();
-            return redirect()->route('articles.index')->with('success', 'User Stored Successfully.');
+        if($request->hasFile("cover")){
+        $file=$request->file("cover");
+        $imageName=time().'_'.$file->getClientOriginalName();
+        $file->move(\public_path("cover/"),$imageName);
 
 
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
+        $article =[
+            "libille" =>$request->libille,
+            "description" =>$request->description,
+            "prix_intial" =>$request->prix_intial,
+            "cover" =>$imageName,
+            'categorie_id'=> $request->categorie_id,
+        ];
+        DB::table('articles')->insert($article);
+        $article_id = DB::getPdo()->lastInsertId();
+       //Article::create($article);
+    }
+    if($request->hasFile("images")){
+        $files=$request->file("images");
+
+        foreach($files as $file){
+            $imageName=time().'_'.$file->getClientOriginalName();
+            $request['article_id']=$article_id;
+            $request['image']=$imageName;
+            $file->move(\public_path("/images"),$imageName);
+            //Image::create($request->all());
+            $image=['image'=>$imageName,'article_id'=>$article_id,'created_at'=>new \DateTime(),'updated_at'=>new \DateTime()];
+            DB::table('images')->insert($image);
 
         }
     }
+    return redirect()->route('articles.index')
+    ->with('success','Product updated successfully');
     }
+
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Article  $article
+     *
      * @return \Illuminate\Http\Response
      */
-    public function show(Article $article)
+    public function show($id)
     {
-        //
+        $article=Article::find($id);
+        if(!$article) abort(404);
+        $images=$article->image;
+        return view('articles.show',compact('article','images'));
+
     }
 
     /**
@@ -104,6 +111,7 @@ class ArticleController extends Controller
             return back()->with('error', 'User Not Found');
         }
         return view('articles.edit',compact('article','categories'));
+
     }
 
     /**
@@ -114,40 +122,82 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'libille' => 'required',
-            'description' => 'required',
-            'prix_intial'=> 'required',
-            'categorie_id' =>'required'
+    {/*
+        $article=Article::findOrFail($id);
+
+        if($request->hasFile("cover")){
+            if (File::exists("cover/".$article->cover)) {
+                File::delete("cover/".$article->cover);
+            }
+            $file=$request->file("cover");
+            $article->cover=time()."_".$file->getClientOriginalName();
+            $file->move(\public_path("/cover"),$article->cover);
+            $request['cover']=$article->cover;
+
+
+        $article =([
+            "libille" =>$request->libille,
+            "description" =>$request->description,
+            "prix_intial" =>$request->prix_intial,
+            "cover" =>$article->cover,
+            'categorie_id'=> $request->categorie_id,
         ]);
-       
-        try {
-            DB::beginTransaction();
-            // Logic For Save User Data
+        DB::table('articles')->insert($article);
 
-            $update_article = Article::where('id', $id)->update([
-                'libille' => $request->libille,
-                'description' => $request->description,
-                'prix_intial' => $request->prix_intial,
-                'categorie_id'=> $request->categorie_id
-            ]);
+    }
+    $article_id = DB::getPdo()->lastInsertId();
+        if($request->hasFile("images")){
+            $files=$request->file("images");
 
-            if(!$update_article){
-                DB::rollBack();
+            foreach($files as $file){
+                $imageName=time().'_'.$file->getClientOriginalName();
+                $request['article_id']=$article_id;
+                $request['image']=$imageName;
+                $file->move(\public_path("/images"),$imageName);
+                //Image::create($request->all());
+                $image=['image'=>$imageName,'article_id'=>$article_id,'created_at'=>new \DateTime(),'updated_at'=>new \DateTime()];
+                DB::table('images')->insert($image);
 
-                return back()->with('error', 'Something went wrong while update user data');
             }
 
-            DB::commit();
-            return redirect()->route('articles.index')->with('success', 'User Updated Successfully.');
-
-
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
         }
+
+           return redirect()->route('articles.index')
+           ->with('success','Post updated successfully');
+    */
+
+    $article=Article::findOrFail($id);
+    if($request->hasFile("cover")){
+        if (File::exists("cover/".$article->cover)) {
+            File::delete("cover/".$article->cover);
+        }
+        $file=$request->file("cover");
+        $article->cover=time()."_".$file->getClientOriginalName();
+        $file->move(\public_path("/cover"),$article->cover);
+        $request['cover']=$article->cover;
     }
+
+       $article->update([
+        "libille" =>$request->libille,
+        "description" =>$request->description,
+        "prix_intial" =>$request->prix_intial,
+        "cover" =>$article->cover,
+        'categorie_id'=> $request->categorie_id,
+       ]);
+
+       if($request->hasFile("images")){
+           $files=$request->file("images");
+           foreach($files as $file){
+               $imageName=time().'_'.$file->getClientOriginalName();
+               $request["article_id"]=$id;
+               $request["image"]=$imageName;
+               $file->move(\public_path("images"),$imageName);
+               Image::create($request->all());
+
+           }
+       }
+       return redirect()->route('articles.index')
+       ->with('success','Post updated successfully');}
 
     /**
      * Remove the specified resource from storage.
@@ -155,27 +205,45 @@ class ArticleController extends Controller
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Http\Response
      */
+    //list image
+public function images($id){
+
+  //
+}
     public function destroy($id)
     {
-        try {
-            DB::beginTransaction();
+        $article=Article::findOrFail($id);
 
-            $delete_article = Article::whereId($id)->delete();
-            //up date champ
-
-            if(!$delete_article){
-                DB::rollBack();
-                return back()->with('error', 'There is an error while deleting user.');
-            }
-
-            DB::commit();
-            return redirect()->route('articles.index')->with('success', 'User Deleted successfully.');
-
-
-
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
+         if (File::exists("cover/".$article->cover)) {
+             File::delete("cover/".$article->cover);
+         }
+         $images=Image::where("article_id",$article->id)->get();
+         foreach($images as $image){
+         if (File::exists("images/".$image->image)) {
+            File::delete("images/".$image->image);
         }
+         }
+         $article->delete();
+         return back();
     }
+    public function deleteimage($id){
+        $images=Image::findOrFail($id);
+
+        if (File::exists("images/".$images->image)) {
+           File::delete("images/".$images->image);
+       }
+
+       Image::find($id)->delete();
+       return back();
+   }
+
+   public function deletecover($id){
+    $cover=Article::findOrFail($id)->cover;
+    if (File::exists("cover/".$cover)) {
+       File::delete("cover/".$cover);
+   }
+   return back();
+}
+
+
 }

@@ -2,25 +2,35 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="container" style="margin-top: 50px;">
+    <div class="row">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Edit Users</h1>
-        <a href="{{route('articles.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
-    </div>
 
-    {{-- Alert Messages --}}
-    @include('common.alert')
+            <div class="col-lg-3">
+                <p>Cover:</p>
+                <form action="/deletecover/{{ $article->id }}" method="post">
+                <button class="btn text-danger">X</button>
+                @csrf
+                @method('delete')
+                </form>
+                <img src="/cover/{{ $article->cover }}" class="img-responsive" style="max-height: 100px; max-width: 100px;" alt="" srcset="">
+                <br>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Edit User</h6>
-        </div>
-        <div class="card-body">
-            <form method="POST" action="{{route('articles.update', $article->id)}}">
+                @if (count($article->image)>0)
+                <p>Images:</p>
+                @foreach ($article->image as $img)
+                <form action="/deleteimage/{{ $img->id }}" method="post" enctype="multipart/form-data">
+                    <button class="btn text-danger">X</button>
+                    @csrf
+                    @method('delete')
+                    </form>
+                <img src="/images/{{ $img->image }}" class="img-responsive" style="max-height: 100px; max-width: 100px;" alt="" srcset="">
+                @endforeach
+                @endif
+
+
+            </div>
+            <form method="POST" action="{{route('articles.update', $article->id)}}"enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="form-group row">
@@ -84,9 +94,16 @@
 
 
                     </select>
+                    <label class="m-2">Cover Image</label>
+                    <input type="file" id="input-file-now-custom-3" class="form-control m-2" name="cover">
+
+                    <label class="m-2">Images</label>
+                    <input type="file" id="input-file-now-custom-3" class="form-control m-2" name="images[]" multiple>
 
 
                                       </div>
+                                    </div>
+
                 {{-- Save Button --}}
                 <button type="submit" class="btn btn-success btn-user btn-block">
                     Update
@@ -97,6 +114,6 @@
     </div>
 
 </div>
-
+</div>
 
 @endsection

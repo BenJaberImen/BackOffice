@@ -7,8 +7,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Add Article</h1>
-        <a href="{{route('articles.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
+        
     </div>
 
     {{-- Alert Messages --}}
@@ -20,60 +19,20 @@
             <h6 class="m-0 font-weight-bold text-primary">Add New Article</h6>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{route('articles.store')}}">
+            <form action="{{ route('articles.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="form-group row">
+                @csrf
+        				 <input type="text" name="libille" class="form-control m-2" placeholder="libille">
+        				 <input type="text" name="description" class="form-control m-2" placeholder="description">
+                         <input name="prix_intial" cols="20" rows="4" class="form-control m-2" placeholder="prix_intial">
+                         <label class="m-2">Cover Image</label>
+                         <input type="file" id="input-file-now-custom-3" class="form-control m-2" name="cover">
 
-                    {{-- Name --}}
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                        <span style="color:red;">*</span>Libille</label>
-                        <input
-                            type="text"
-                            class="form-control form-control-user @error('libille') is-invalid @enderror"
-                            id="exampleLibille"
-                            placeholder="libille"
-                            name="libille"
-                            value="{{ old('libille') }}">
-
-                        @error('libille')
-                            <span class="text-danger">{{$message}}</span>
-                        @enderror
-                    </div>
+                         <label class="m-2">Images</label>
+                         <input type="file" id="input-file-now-custom-3" class="form-control m-2" name="images[]" multiple>
 
 
-                    {{-- Email --}}
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                        <span style="color:red;">*</span>description</label>
-                        <input type="text"
-                            class="form-control form-control-user @error('description') is-invalid @enderror"
-                            id="exampleDescription"
-                            placeholder="description"
-                            name="description"
-                            value="{{ old('description') }}">
-
-                        @error('description')
-                            <span class="text-danger">{{$message}}</span>
-                        @enderror
-                    </div>
-
-                </div>
-                <div class="col-sm-6 mb-3 mb-sm-0">
-                    <span style="color:red;">*</span>prix_intial</label>
-                    <input type="text"
-                        class="form-control form-control-user @error('prix_intial') is-invalid @enderror"
-                        id="examplePrix_intial"
-                        placeholder="prix_intial"
-                        name="prix_intial"
-                        value="{{ old('prix_intial') }}">
-
-                    @error('prix_intial')
-                        <span class="text-danger">{{$message}}</span>
-                    @enderror
-                </div>
-
-            </div>
-
-  {{-- Role --}}
+  {{-- categorie--}}
                   <div class="from-group">
 
 <label for="categorie_id"> categorie</label>
@@ -90,6 +49,7 @@
 
 
                   </div>
+
 
                 {{-- Save Button --}}
                 <button type="submit" class="btn btn-success btn-user btn-block">

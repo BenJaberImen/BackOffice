@@ -97,19 +97,24 @@ class CategorieController extends Controller
      */
     public function update(Request $request, $id)
     {
+         $categorie = Categorie::find($id);
         $request->validate([
             'libelle' => 'required',
             'description' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $categorie = Categorie::find($id);
-        if($request->hasFile('image')){
-            $request->validate([
-              'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            ]);
-            $path = $request->file('image')->store('public/image');
-            $categorie->image = $path;
+        $input = $request->all();
+
+        if ($image = $request->file('image')) {
+          
+            $destinationPath = 'image/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$profileImage";
+            $categorie->image=$profileImage;
         }
+           
         $categorie->libelle = $request->libelle;
         $categorie->description = $request->description;
         $categorie->save();

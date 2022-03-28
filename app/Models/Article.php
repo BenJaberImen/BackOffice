@@ -15,11 +15,18 @@ class Article extends Model
         'description',
         'prix_intial',
         'categorie_id',
-        
+        'cover',
 
-       
+
+
+
     ];
     public function categorie(){
         return $this->belongsTo(Categorie::class);
     }
+
+    public function image(){
+        return $this->hasMany(Image::class);
+    }
+
 }

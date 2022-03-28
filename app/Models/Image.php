@@ -10,8 +10,14 @@ class Image extends Model
     use HasFactory;
     protected $guarded=[];
     protected $fillable = [
-        'name',
+
         'image',
+        'article_id'
 
     ];
+
+    public function article()
+    {
+        return $this->belongsTo(Article::class);
+    }
 }

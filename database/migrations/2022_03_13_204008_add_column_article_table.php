@@ -18,6 +18,7 @@ class AddColumnArticleTable extends Migration
 
 $table->foreignId('categorie_id')->constrained();
 
+
       });
     }
     /**

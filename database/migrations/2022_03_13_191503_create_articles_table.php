@@ -12,15 +12,16 @@ class CreateArticlesTable extends Migration
      * @return void
      */
     public function up()
-    { 
+    {
         Schema::create('articles', function (Blueprint $table) {
-        
+
             $table->id();
-           
+
             $table->string('libille');
             $table->float('prix_intial');
-            $table->string('description');
-            
+            $table->text('description');
+            $table->text('cover');
+
             $table->timestamps();
         });
     }
@@ -33,5 +34,5 @@ class CreateArticlesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('articles');
-    } 
+    }
 }

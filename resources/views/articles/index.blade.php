@@ -6,9 +6,9 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Article</h1>
-        <a href="{{route('articles.create')}}" class="btn btn-sm btn-primary" >
-            <i class="fas fa-plus"></i> Add New
-        </a>
+        <div class="card-tools">
+            <a href="{{ route('articles.create') }}" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Create new Article</a>
+        </div>
     </div>
 
     {{-- Alert Messages --}}
@@ -22,41 +22,49 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table" id="myTable">
                     <thead>
-                        <tr>
-                            <th>Libille</th>
-                            <th>description</th>
-                            <th>prix initial</th>
-                            <th>categorie</th>
-
-                            <th>Action</th>
-                        </tr>
+                      <tr>
+                        <th>ID</th>
+                        <th>libille</th>
+                        <th>prix_intial</th>
+                        <th>Description</th>
+                        <th>Categorie</th>
+                        <th>Cover</th>
+                        <th>Update</th>
+                         <th>View Image</th>
+                        <th>Delete</th>
+                      </tr>
                     </thead>
                     <tbody>
-                       @foreach ($articles as $article)
-                           <tr>
-                               <td>{{$article->libille}}</td>
-                               <td>{{$article->description}}</td>
 
-                               <td> {{$article->prix_intial}} DT </td>
 
-                               <td>{{ $article->categorie->libelle }}</td>
+                        @foreach ($articles as $article)
+                     <tr>
+                           <th scope="row">{{ $article->id }}</th>
+                           <td>{{ $article->libille }}</td>
+                           <td>{{ $article->prix_intial }}</td>
+                           <td>{{ $article->description }}</td>
+                           <td>{{ $article->categorie->libelle }}</td>
+                           <td><img src="cover/{{ $article->cover }}" class="img-responsive" style="max-height:100px; max-width:100px" alt="" srcset=""></td>
 
-                                <td>
-                                    <form action="{{ route('articles.destroy',$article->id) }}" method="POST">
+                           <td><a href="{{ route('articles.edit', $article->id) }}" class="btn btn-outline-primary">Update</a></td>
+                            <td>
+                            <a href={{route('articles.show',$article->id)}} class="btn btn-outline-dark">View</a>
+                        </td>
+                           <td>
+                            <form action="{{ route('articles.destroy',$article->id) }}" method="POST">
+                                <button class="btn btn-outline-danger" onclick="return confirm('Are you sure?');" type="submit">Delete</button>
+                                @csrf
+                                @method('delete')
+                            </form>
+                           </td>
 
-                                    <a href="{{ route('articles.edit',['article' => $article->id])  }}" class="btn btn-sm btn-warning">Edit</a>
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                                </td>
-
-                           </tr>
+                       </tr>
                        @endforeach
+
                     </tbody>
-                </table>
+                  </table>
             </div>
         </div>
     </div>
